@@ -21,7 +21,18 @@ The primary goals of this script are to:
 Install the necessary packages using the following commands:
 
 ```R
-install.packages(c("readr", "readxl", "dplyr", "ggplot2", "lmerTest"))
+install.packages(c("readr", "readxl", "dplyr", "ggplot2", "tidyr", "lmerTest"))
+``
+
+Load the libraries:
+
+```R
+library(readr)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(lme4)
 ```
 
 ## Script Components
