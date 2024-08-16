@@ -71,7 +71,7 @@ This repository provides pipelines for automated single-cell segmentation image 
 - **MeasureObjectIntensity**
   - **Purpose:** Measures mitochondrial protein expression levels within identified cells.
   - **Parameters:** 
-    - `Intensity Measurements`: Specify the mitochondrial marker to quantify.
+    - `Intensity Measurements`: Specify the mitochondrial marker to quantify (e.g., VDAC1 (Mitochondrial Mass), NDUFB8 (Complex I), and MTCO1 (Complex IV).
 
 - **ExportToSpreadsheet**
   - **Purpose:** Export the quantified protein expression data to a spreadsheet.
