@@ -55,11 +55,9 @@ The analysis utilises K-means clustering to group beta cells based on several pa
 - **Elbow Plots**: To determine the number of clusters approporiate, elbow plots were produced. 
 - **Clusters**: Beta cells are grouped into clusters based on these parameters to uncover patterns and relationships.
 
-
 ### Visualization
 
-1. **Visualizations**:
-   - Generates various plots, including:
+Generates various plots, including:
      - Alpha-beta ratio by diabetes staus.
      - Alpha-beta ratio by sex.
      - Proportions of cell types by diabetic status.
