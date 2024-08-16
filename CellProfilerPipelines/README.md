@@ -7,12 +7,12 @@ This repository provides pipelines for automated single-cell segmentation image 
 
 ### 1. Islet Composite Analysis Pipeline
 
-**Purpose:** Analyze islet composition by integrating multiple cellular markers to provide detailed insights into islet structures and cellular interactions.
+**Purpose:** Analyse islet composition by integrating multiple cellular markers to provide detailed insights into islet composition and cellular interactions.
 
 **Modules Used:**
 
 - **RescaleIntensity**
-  - **Purpose:** Adjust the intensity values of images to a standard range to improve contrast and visibility.
+  - **Purpose:** Normalise the intensity values of mitochondrial images to enhance contrast and improve measurement accuracy.
   - **Parameters:**
     - `Scaling Method`: Define the method for scaling intensity (e.g., linear, logarithmic).
     - `Range`: Specify the target range for intensity values.
@@ -51,7 +51,7 @@ This repository provides pipelines for automated single-cell segmentation image 
 **Modules Used:**
 
 - **RescaleIntensity**
-  - **Purpose:** Normalize the intensity values of mitochondrial images to enhance contrast and improve measurement accuracy.
+  - **Purpose:** Normalise the intensity values of mitochondrial images to enhance contrast and improve measurement accuracy.
   - **Parameters:**
     - `Scaling Method`: Define the scaling method for intensity values.
     - `Range`: Specify the target range for normalized intensity.
