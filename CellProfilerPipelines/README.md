@@ -89,7 +89,7 @@ To set up the environment for using these pipelines, follow the instructions bel
    - Follow the installation instructions provided for your operating system.
 
 2. **Load the Pipeline:**
-   - Open CellProfiler and load the pipeline configuration files (`.cpproj`) provided in the `pipelines` directory.
+   - Open CellProfiler and load the pipeline configuration files (`.cpproj`) provided in the `CellProfilerPipelines` directory.
 
 3. **Configure the Pipeline:**
    - Adjust the module settings as needed based on your data and analysis requirements.
