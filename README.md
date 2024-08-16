@@ -28,7 +28,7 @@ This image analysis pipeline was developed as part of a study exploring islet co
 - **Mitochondrial Function**: T2D β-cells exhibited altered oxidative phosphorylation (OXPHOS) signatures, including single-cell resolution changes in Complex I and IV expression ratios.
 
 ## Software and Tools Used
-- **Microscopy**: Zeiss LSM800 AiryScan.
+- **Microscope**: Zeiss LSM800 AiryScan.
 - **Image Conversion**: ImageJ/Fiji Macro.
 - **Pixel Classification**: Ilastik (ImageJ/Fiji Macro).
 - **Nuclei Segmentation**: Stardist in ImageJ/Fiji (ImageJ/Fiji Macro).
