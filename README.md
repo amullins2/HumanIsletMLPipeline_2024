@@ -8,7 +8,7 @@ This image analysis pipeline was developed as part of a study exploring islet co
 ## Pipeline Summary
 
 ### 1. **Image Acquisition**
-   - Human pancreatic islets are imaged using the confocal Zeiss LSM800 AiryScan Microscope.
+   - Formaldehyde-fixed human pancreatic tissue was stained and imaged using the confocal Zeiss LSM800 AiryScan Microscope.
    - Images are captured in `.czi` format and then converted to `.tiff` format for processing.
 
 ### 2. **Image Preparation**
