@@ -1,0 +1,8 @@
+import cellprofiler_core
+
+# This under the assumption cellprofiler is installed in yout local environment 
+pipeline_path = "path/to/your/pipeline.cppipe"
+
+# Load and run the pipeline
+pipeline = cellprofiler_core.pipeline.Pipeline.load(pipeline_path)
+pipeline.run()
