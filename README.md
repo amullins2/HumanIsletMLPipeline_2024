@@ -52,7 +52,7 @@ This image analysis pipeline was developed as part of a study exploring islet co
 
 ## Contact Information
 For any questions or further assistance, please contact:
-- Alana Mullins (Primary Contact)
+- Alana Mullins (Primary Contact) - a.mullins2@newcastle.ac.uk
 - Catherine Arden
 - Laura Greaves
 - Mark Walker
@@ -60,8 +60,5 @@ For any questions or further assistance, please contact:
 Biosciences Institute, Newcastle University, Newcastle Upon Tyne, UK
 
 ## Acknowledgements
-This project was developed as part of a study funded by [Institution/Funding Body]. The images and data generated from this pipeline were instrumental in understanding islet composition and mitochondrial function in the context of aging and Type 2 Diabetes.
+This project was developed as part of a study funded by Newcastle Univeristy. The images and data generated from this pipeline were instrumental in understanding islet composition and mitochondrial function in the context of aging and Type 2 Diabetes.
 
----
-
-This README should provide a clear and concise guide for using the image analysis pipeline. Adjustments can be made based on specific needs or additional details.
