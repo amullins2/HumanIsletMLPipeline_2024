@@ -3,7 +3,7 @@
 
 ## Overview
 
-The script processes and filters data, performs statistical analyses, generates visualizations, and outputs results. It involves multiple steps including data loading, filtering, merging, statistical analysis, and visualization.
+This README provides an overview of the steps involved in analysing islet composition data. The analysis includes preprocessing steps such as threshold filtering of beta cells, as well as visualising insulin and glucagon expression levels and clustering data based on islet area and clinical parameters.
 
 ## Purpose
 
