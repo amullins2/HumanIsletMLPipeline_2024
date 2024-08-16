@@ -58,7 +58,7 @@ The repository includes various plots to help visualise and interpret the data:
 - Violin Plots by Sex and Diabetes Status.
 - Proportional Stacked Bar Charts.
 - Residual Analysis by Cell Type.
-- Scatter Plots by BMI and Age
+- Scatter Plots by BMI and Age.
 
 
 
