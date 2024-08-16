@@ -29,7 +29,7 @@ This ImageJ macro is designed for the segmentation, cropping, and scaling of isl
 
 ## Detailed Steps
 
-### 1. Setup and Initialization
+### 1. Setup and Initialisation
 
 - **Choose Folders:**
   - Home folder containing all other folders.
