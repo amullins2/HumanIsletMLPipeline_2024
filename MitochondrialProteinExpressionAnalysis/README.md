@@ -32,6 +32,32 @@ library(lme4)
 1. **`NDUFB8VDAC1AnalysisScript.R`**: This script quantifies and analyzes the NDUFB8/VDAC1 ratio in beta cells. It handles preprocessing, filtering, and clustering tasks.
 2. **`MTCO1VDAC1AnalysisScript.R`**: This script is dedicated to the quantification and analysis of the MTCO1/VDAC1 ratio, following similar preprocessing and clustering steps as the NDUFB8 script.
 
+### Data Filtering and Processing
+
+1. **Filtering Data**:
+   - Subsets data to retain only the relevant columns for insulin and glucagon intensity.
+   - Applies donor-specific thresholds to filter cells based on insulin and glucagon intensity.
+
+2. **Merging Data**:
+   - Merges filtered data for insulin and glucagon based on `ImageNumber`.
+   - Filters merged data to find cells that are both insulin and glucagon positive.
+
+### Analysis
+
+1. **Clustering**:
+   - Performs k-means clustering to categorize islets based on islet area.
+   - Analyses and visualizes the clusters.
+
+### Visualization
+
+1. **Visualizations**:
+   - Generates various plots, including:
+     - Alpha-beta ratio by diabetes staus.
+     - Alpha-beta ratio by sex.
+     - Proportions of cell types by diabetic status.
+     - Islet area clusters vs. alpha-beta ratio.
+     - Age group vs. alpha-beta ratio.
+     - BMI vs. alpha-beta ratio.
 ### Data Preprocessing
 1. **Filtering Beta Cells**: Includes filtering beta cells based on donor-specific thresholds to ensure accurate analysis.
 2. **Threshold Assignment**: Applies thresholds to filter beta cells per donor, facilitating focused and reliable quantification.
