@@ -32,35 +32,18 @@ library(lme4)
 1. **`NDUFB8VDAC1AnalysisScript.R`**: This script quantifies and analyzes the NDUFB8/VDAC1 ratio in beta cells. It handles preprocessing, filtering, and clustering tasks.
 2. **`MTCO1VDAC1AnalysisScript.R`**: This script is dedicated to the quantification and analysis of the MTCO1/VDAC1 ratio, following similar preprocessing and clustering steps as the NDUFB8 script.
 
+## Script Components
+
 ### Data Filtering and Processing
 
 1. **Filtering Data**:
-   - Subsets data to retain only the relevant columns for insulin and glucagon intensity.
-   - Applies donor-specific thresholds to filter cells based on insulin and glucagon intensity.
+   - Subsets data to retain only the relevant columns for insulin intensity, MTCO1 intensity, NDUFB8 intensity and VDAC1 intensity.
+   - Applies donor-specific thresholds to filter cells based on insulin intensity.
 
 2. **Merging Data**:
-   - Merges filtered data for insulin and glucagon based on `ImageNumber`.
-   - Filters merged data to find cells that are both insulin and glucagon positive.
+   - Merges filtered data for 'Donor_ID and `ImageNumber`.
 
-### Analysis
-
-1. **Clustering**:
-   - Performs k-means clustering to categorize islets based on islet area.
-   - Analyses and visualizes the clusters.
-
-### Visualization
-
-1. **Visualizations**:
-   - Generates various plots, including:
-     - Alpha-beta ratio by diabetes staus.
-     - Alpha-beta ratio by sex.
-     - Proportions of cell types by diabetic status.
-     - Islet area clusters vs. alpha-beta ratio.
-     - Age group vs. alpha-beta ratio.
-     - BMI vs. alpha-beta ratio.
-### Data Preprocessing
-1. **Filtering Beta Cells**: Includes filtering beta cells based on donor-specific thresholds to ensure accurate analysis.
-2. **Threshold Assignment**: Applies thresholds to filter beta cells per donor, facilitating focused and reliable quantification.
+## Analysis
 
 ### K-Means Clustering
 The analysis utilises K-means clustering to group beta cells based on several parameters:
@@ -68,13 +51,14 @@ The analysis utilises K-means clustering to group beta cells based on several pa
 - **Elbow Plots**: To determine the number of clusters approporiate, elbow plots were produced. 
 - **Clusters**: Beta cells are grouped into clusters based on these parameters to uncover patterns and relationships.
 
-### Plots and Visualisation
+### Visualization
+
 The repository includes various plots to help visualise and interpret the data:
-- **Bar Chart of Beta Cell Counts by Diabetes Status**: Identifies the significantly lower amount of beta-cells quantified in T2D group compared to those without diabetes. 
-- **Violin Plots by Sex and Diabetes Status**: Illustrates the distribution of OXPHOS Protein/VDAC1 ratios across different expression levels, stratified by sex and diabetes status.
-- **Proportional Stacked Bar Charts**: Displays the distribution of beta cells across OXPHOS Protein/VDAC1 ratio expression clusters, grouped by sex and diabetes status.
-- **Residual Analysis by Cell Type**: Boxplots of residuals from a linear model predicting NDUFB8/VDAC1 ratios, categorized by cell type.
-- **Scatter Plots by BMI and Age**: Shows the relationship between BMI, age, and XPHOS Protein/VDAC1 ratios, including linear regression lines.
+- Bar Chart of Beta Cell Counts by Diabetes Status.
+- Violin Plots by Sex and Diabetes Status.
+- Proportional Stacked Bar Charts.
+- Residual Analysis by Cell Type.
+- Scatter Plots by BMI and Age
 
 
 
