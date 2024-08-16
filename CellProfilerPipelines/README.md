@@ -44,7 +44,7 @@ This repository provides pipelines for automated single-cell segmentation image 
   - **Parameters:** 
     - `Output Directory`: Specify where to save the results.
 
-### 2. Mitochondria Protein Expression Quantification Pipeline
+### 2. Mitochondrial Protein Expression Quantification Pipeline
 
 **Purpose:** Quantify mitochondrial protein expression within cells using a specific marker for segmentation.
 
