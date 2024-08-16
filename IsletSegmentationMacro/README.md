@@ -7,10 +7,10 @@ This ImageJ macro is designed for the segmentation, cropping, and scaling of isl
 
 ## Overview
 
-1. **Setup and Initialization:**
+1. **Setup and Initialisation:**
    - Define the home and raw image folders.
    - Set measurement parameters.
-   - Initialize output folders for segmented images, cropped islets, and scaled images.
+   - Initialise output folders for segmented images, cropped islets, and scaled images.
 
 2. **Processing Raw Images:**
    - Import images using Bio-Formats.
