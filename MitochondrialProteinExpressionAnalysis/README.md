@@ -7,105 +7,94 @@ This README provides an overview of the steps involved in analysing mitondrial p
 Ensure that the following R libraries are installed and loaded:
 
 ```R
+install.packages("readxl")
 install.packages("ggplot2")
 install.packages("dplyr")
 install.packages("tidyr")
+install.packages("lme4")
 ```
 
 Load the libraries:
 
 ```R
+library(readxl)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(lme4)
 ```
 
-## Data Preparation
+Certainly! Below is a draft of a README file that explains the plots created in the provided code. This README outlines the purpose of the plots, provides a brief explanation of each one, and offers guidance on how to interpret them.
 
-1. **Filter Beta Cells:**
+---
 
-   The dataset is filtered to include only beta cells. The data is grouped by donor ID and diabetic status to summarize the total number of beta cells.
-   
-2. **Data Transformation for Visualization:**
+# NDUFB8/VDAC1 Ratio Analysis
 
-   The table is pivoted to facilitate comparison between donors with and wihtout type 2 diabetes (T2D).
-   
-3. **Protein Expression Data Filtering:**
+This analysis focuses on the ratio of NDUFB8 to VDAC1 across various groups, including by sex, diabetic status, BMI, age, and other factors. The plots generated here offer visual insights into the relationships and differences between these groups.
 
-   Data is filtered based on specific threshold values for insulin positivity per donor.
+## Table of Contents
+1. [Data Overview](#data-overview)
+2. [Plots and Descriptions](#plots-and-descriptions)
+   - [Violin Plots by Sex](#violin-plots-by-sex)
+   - [Violin Plots by Diabetic Status](#violin-plots-by-diabetic-status)
+   - [Scatter Plots by BMI](#scatter-plots-by-bmi)
+   - [Scatter Plots by Age](#scatter-plots-by-age)
+   - [Grouped Stacked Bar Charts by Diabetic Status](#grouped-stacked-bar-charts-by-diabetic-status)
+   - [Grouped Stacked Bar Charts by Sex](#grouped-stacked-bar-charts-by-sex)
+   - [Residual Analysis by Cell Type](#residual-analysis-by-cell-type)
+   - [Proportional Stacked Bar Charts by Sex and Diabetic Status](#proportional-stacked-bar-charts-by-sex-and-diabetic-status)
+   - [Violin Plots by Sex and Diabetic Status](#violin-plots-by-sex-and-diabetic-status)
 
-## Data Visualization
+## Data Overview
 
-### Beta Cell Counts Comparison
+The dataset used in this analysis comprises beta cell samples with various attributes, such as donor ID, sex, diabetic status, BMI, age, and NDUFB8/VDAC1 ratio. The dataset is used to generate multiple plots to explore potential patterns and differences in NDUFB8/VDAC1 ratio across different groups.
 
-**Bar Graph of Beta Cell Counts:**
+## Plots and Descriptions
 
-   A bar graph visualizes the total number of beta cells by diabetic status.
+### Violin Plots by Sex
+![Violin Plots by Sex](#)
+- **Description**: This plot illustrates the distribution of the NDUFB8/VDAC1 ratio across different expression levels (`Low Expression`, `Medium Expression`, `High Expression`) and sexes (`Male`, `Female`). The width of the violin plots indicates the density of the data points, with added points showing the mean values.
+- **Interpretation**: The plot can be used to compare the spread and central tendency of NDUFB8/VDAC1 ratios between male and female subjects across different expression levels.
 
-   ```R
-   ggplot(beta_cell_counts2, aes(x = factor(diabetic_status), y = total_beta_cells, fill = factor(diabetic_status))) +
-       geom_bar(stat = "identity") +
-       labs(x = "Diabetic Status", y = "Total Beta Cells", fill = "Diabetic Status") +
-       theme_minimal()
-   ```
+### Violin Plots by Diabetic Status
+![Violin Plots by Diabetic Status](#)
+- **Description**: Similar to the previous plot, this violin plot displays the distribution of the NDUFB8/VDAC1 ratio by diabetic status (`With T2D`, `Without Diabetes`).
+- **Interpretation**: The plot highlights differences in the NDUFB8/VDAC1 ratio between diabetic and non-diabetic subjects.
 
-### Protein Intensity Analysis
+### Scatter Plots by BMI
+![Scatter Plots by BMI](#)
+- **Description**: This scatter plot shows the relationship between BMI and the NDUFB8/VDAC1 ratio for each donor. A linear regression line is included to indicate the overall trend.
+- **Interpretation**: The plot allows for the examination of how the NDUFB8/VDAC1 ratio varies with BMI across different donors.
 
-1. **NDUFB8 Intensity by Donor:**
+### Scatter Plots by Age
+![Scatter Plots by Age](#)
+- **Description**: This plot is similar to the BMI scatter plot but focuses on the relationship between age and the NDUFB8/VDAC1 ratio.
+- **Interpretation**: The plot provides insights into whether age has an impact on the NDUFB8/VDAC1 ratio.
 
-   The average NDUFB8 intensity is plotted for each islet per donor.
+### Grouped Stacked Bar Charts by Diabetic Status
+![Grouped Stacked Bar Charts by Diabetic Status](#)
+- **Description**: This bar chart shows the proportion of beta cells across different clusters (`Low Expression`, `Medium Expression`, `High Expression`) within diabetic and non-diabetic groups.
+- **Interpretation**: The chart helps in understanding the distribution of beta cell expression levels in relation to diabetic status.
 
-2. **MTCO1 Intensity by Donor:**
+### Grouped Stacked Bar Charts by Sex
+![Grouped Stacked Bar Charts by Sex](#)
+- **Description**: This chart displays the proportion of beta cells across different clusters within male and female groups.
+- **Interpretation**: It can be used to compare how beta cell expression levels vary between the sexes.
 
-   The average NDUFB8 intensity is plotted for each islet per donor:
+### Residual Analysis by Cell Type
+![Residual Analysis by Cell Type](#)
+- **Description**: A boxplot representing the residuals from a linear model predicting the NDUFB8/VDAC1 ratio based on age, BMI, sex, and diabetic status. The residuals are grouped by cell type.
+- **Interpretation**: This plot can be used to assess the consistency of the linear model's predictions across different cell types.
 
-3. **VDAC1 Intensity Analysis by Diabetic Status:**
+### Proportional Stacked Bar Charts by Sex and Diabetic Status
+![Proportional Stacked Bar Charts by Sex and Diabetic Status](#)
+- **Description**: These stacked bar charts show the proportion of beta cells in each expression cluster for male and female subjects, split by diabetic status.
+- **Interpretation**: These plots help in visualizing the combined effect of sex and diabetic status on beta cell expression levels.
 
-   Separate plots visualize the VDAC1 intensity for non-diabetic and type 2 diabetic donors:
+### Violin Plots by Sex and Diabetic Status
+![Violin Plots by Sex and Diabetic Status](#)
+- **Description**: This plot combines sex and diabetic status to show the NDUFB8/VDAC1 ratio distribution across different expression levels.
+- **Interpretation**: The plot enables a more granular comparison of NDUFB8/VDAC1 ratios across combined groups.
 
-   ```R
-   plot_non_diabetic <- ggplot(subset(merged_data_ndufb8, diabetic_status == 1), aes(x = donor_id, y = Intensity_MeanIntensity_vdac1, color = as.factor(diabetic_status))) +
-       geom_point() +
-       labs(x = "Donor ID", y = "Intensity of VDAC1", title = "Non-Diabetic") +
-       scale_color_manual(values = "blue") +
-       theme_minimal() +
-       theme(legend.position = "none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-   plot_type_two_diabetic <- ggplot(subset(merged_data_ndufb8, diabetic_status == 2), aes(x = donor_id, y = Intensity_MeanIntensity_vdac1, color = as.factor(diabetic_status))) +
-       geom_point() +
-       labs(x = "Donor ID", y = "Intensity of VDAC1", title = "Type Two Diabetic") +
-       scale_color_manual(values = "red") +
-       theme_minimal() +
-       theme(legend.position = "none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-   ```
-
-4. **NDUFB8/VDAC1 Ratio Analysis:**
-
-   Violin plots are created to compare the NDUFB8/VDAC1 ratio by diabetic status and sex:
-
-   ```R
-   ggplot(combined_data_ndufb9complexI, aes(x = cluster, y = ndufb8_vdac1_ratio, fill = diabetic_status)) +
-       geom_violin(position = position_dodge(width = 0.9), scale = "width", alpha = 0.7) +
-       stat_summary(fun = "mean", geom = "point", shape = 20, size = 3, color = "black") +
-       scale_fill_manual(values = custom_colors) +
-       labs(x = "Expression Level", y = "NDUFB8/VDAC1 Ratio", title = "NDUFB8/VDAC1 Ratio by Expression Level and Diabetic Status") +
-       theme_minimal()
-   ```
-
-### Clustering Analysis
-
-1. **K-means Clustering:**
-
-   K-means clustering is performed based on expression levels and clinical data:
-
-   ```R
-   kmeans_result <- kmeans(clustering_data, centers = 3)
-   ```
-
-2. **Cluster-Based Analysis:**
-
-## Conclusion
-
-This analysis provides a comprehensive overview of the expression levels of Mitondrila proteins NDUFB8 and VDAC1 in beta cells, taking into account various factors such as diabetic status, donor ID, and clinical parameters. The visualizations and clustering provide insights into the distribution and intensity of these proteins, which can be used for further research and interpretation.
 
 
