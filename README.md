@@ -1,5 +1,3 @@
-# AutomatedSingleCellSegmentationPipeline_2024
-
 # Single-Cell Segmentation Image Analysis Pipeline for Islet Composition and Mitochondrial Protein Expression
 
 ## Overview
