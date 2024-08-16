@@ -313,7 +313,7 @@ ggplot"
  library(ggplot2)
  
  # Reshape the data to have one row per observation (beta cell)
- reshaped_data <- tidyr::pivot_longer(merged_data_ndufb8, 
+ reshaped_data <- tidyr::pivot_longer(combined_data_mtco1complexIV, 
                                       cols = starts_with("Intensity"), 
                                       names_to = "Measurement", 
                                       values_to = "Intensity")
@@ -324,7 +324,7 @@ ggplot"
  # Create a jitter plot with each donor having a different color
  jitter_plot <- ggplot(reshaped_data, aes(x = donor_id, y = Intensity, color = donor_id)) +
      geom_jitter(position = position_jitter(width = 0.3), alpha = 0.5) +
-     labs(x = "Donor ID", y = "Intensity of NDUFB8", color = "Donor ID") +
+     labs(x = "Donor ID", y = "Intensity of MTCO1", color = "Donor ID") +
      scale_color_discrete(guide = FALSE) +
      theme_minimal() +
      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))  # Rotate x-axis labels vertically
@@ -457,42 +457,392 @@ Error in -c("diabetic_status") : invalid argument to unary operator
  # Convert to data frame for easier plotting
  cluster_counts_df <- as.data.frame.matrix(cluster_counts)
  cluster_counts_df$cluster <- rownames(cluster_counts_df)
- 
- # Reshape the data for plotting
- library(tidyr)
- cluster_counts_df <- pivot_longer(cluster_counts_df, cols = -cluster, names_to = "diabetic_status", values_to = "count")
- 
- # Plotting the bar plot
- ggplot(cluster_counts_df, aes(x = cluster, y = count, fill = diabetic_status)) +
-     geom_bar(stat = "identity", position = "dodge") +
-     labs(x = "Cluster", y = "Count", fill = "Diabetic Status") +
-     theme_minimal()
 
-# Load necessary libraries, to create sex proportion plots
-library(dplyr)
-library(ggplot2)
+combined_data_mtco1complexIV <- merged_data
 
-# Create the data frame with percentages
-data_percent <- data.frame(
-    Cluster = factor(rep(c("high", "medium", "low"), each = 2), levels = c("low", "medium", "high")),  # Ensure Cluster levels are ordered
-    Sex = factor(rep(c(1, 2), 3), labels = c("Female", "Male")),
-    Percentage = c(36.6, 12.4, 42.3, 37.2, 21.1, 50.4)
-)
+# List of donor IDs to remove, based on review of data and images
+donor_ids_to_remove <- c("HP13062016", "HP28052016", "HP19022013", "PT0267_0034")
 
-# Define Tableau colors
-tableau_colors <- c("#4E79A7", "#F28E2B", "#E15759")
+# Filter out rows with the specified donor IDs
+updated_data <- combined_data_mtco1complexIV %>%
+    filter(!donor_id %in% donor_ids_to_remove)
 
-# Add a column for positioning the asterisks
-data_percent <- data_percent %>%
-    group_by(Sex) %>%
-    mutate(ypos = cumsum(Percentage) - 0.5 * Percentage)
+# Save the updated dataframe to a new variable or overwrite the original
+# Assuming you want to overwrite the original dataframe
+combined_data_mtco1complexIV <- updated_data
 
-# Create the stacked bar plot with asterisks
-ggplot(data_percent, aes(x = Sex, y = Percentage, fill = Cluster)) +
-    geom_bar(stat = "identity") +
-    geom_text(aes(y = ypos, label = "***"), vjust = 0.5, color = "black", size = 5) +
-    labs(x = "Sex", y = "Percentage (%)", title = "Beta-Cell Proportions by Cluster and Sex") +
-    scale_fill_manual(values = tableau_colors, labels = c("Low", "Medium", "High")) +
+# Optionally, if you want to save the updated dataframe to a new file
+# write.csv(updated_data, file = "updated_data.csv", row.names = FALSE)
+
+# Print a summary or check the updated dataframe
+summary(ccombined_data_mtco1complexIV)
+
+# Assuming combined_data_ndufb9complexI is already loaded
+# If Sex column is named "Sex (F=1, M=2)", rename it for easier handling
+combined_data_ndufb9complexI <- combined_data_mtco1complexIV %>%
+    rename(Sex = `Sex (F=1, M=2)`)
+
+# Convert Sex to factor for better handling in ggplot2
+combined_data_mtco1complexIV$Sex <- factor(combined_data_mtco1complexIV$Sex, labels = c("Female", "Male"))
+
+# Define custom colors
+custom_colors <- c("#1f77b4", "#ff7f0e")
+
+# Create the violin plot
+p <- ggplot(combined_data_mtco1complexIV, aes(x = cluster, y = mtco1_vdac1_ratio, fill = Sex)) +
+    geom_violin(aes(fill = Sex), position = position_dodge(width = 0.9), scale = "width", alpha = 0.7) +
+    stat_summary(fun = "mean", geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(width = 0.9)) +
+    scale_fill_manual(values = custom_colors) +
+    labs(x = "Expression Level", y = "MTCO1/VDAC1 Ratio", title = "MTCO1/VDAC1 Ratio by Expression Level and Sex") +
     theme_minimal() +
-    theme(legend.title = element_blank())
+    theme(legend.title = element_blank()) +
+    annotate("text", x = 2, y = max(combined_data_ndufb9complexI$mtco1_vdac1_ratio) + 0.05, label = "***", size = 6) +
+    annotate("text", x = 3, y = max(combined_data_ndufb9complexI$mtco1_vdac1_ratio) + 0.05, label = "***", size = 6)
+
+# Display the plot
+print(p)
+
+# Define custom colors
+custom_colors <- c("#1f77b4", "#ff7f0e")
+
+# Create the violin plot
+p <- ggplot(combined_data_mtco1complexIV, aes(x = cluster, y = mtco1_vdac1_ratio, fill = diabetic_status)) +
+    geom_violin(aes(fill = diabetic_status), position = position_dodge(width = 0.9), scale = "width", alpha = 0.7) +
+    stat_summary(fun = "mean", geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(width = 0.9)) +
+    scale_fill_manual(values = custom_colors) +
+    labs(x = "Expression Level", y = "MTCO1/VDAC1 Ratio", title = "MTCO1/VDAC1 Ratio by Expression Level and Diabetic Status") +
+    theme_minimal() +
+    theme(legend.title = element_blank()) +
+    annotate("text", x = 1, y = max(combined_data_mtco1complexIV$mtco1_vdac1_ratio) + 0.05, label = "***", size = 6) +
+    annotate("text", x = 2, y = max(combined_data_mtco1complexIV$mtco1_vdac1_ratio) + 0.05, label = "***", size = 6) +
+    annotate("text", x = 3, y = max(combined_data_mtco1complexIV$mtco1_vdac1_ratio) + 0.05, label = "***", size = 6)
+
+# Display the plot
+print(p)
+
+# Fit the linear model
+linear_model <- lm(mtco1_vdac1_ratio ~ bmi, data = combined_data_mtco1complexIV)
+
+# Print the summary of the linear model to get the slope
+summary(linear_model)
+
+# Assuming combined_data_ndufb9complexI is already loaded
+# Rename columns for easier handling
+combined_data_mtco1complexIV <- combined_data_mtco1complexIV %>%
+    rename(bmi = bmi, mtco1_vdac1_ratio = mtco1_vdac1_ratio, donor_id = donor_id)
+
+# Sort the data by BMI
+combined_data_mtco1complexIV <- combined_data_mtco1complexIV %>%
+    arrange(bmi)
+
+# Create the scatter plot with smoothing line
+p <- ggplot(combined_data_mtco1complexIV, aes(x = bmi, y = mtco1_vdac1_ratio, color = donor_id)) +
+    geom_point(alpha = 0.6) +
+    geom_smooth(method = "lm", se = FALSE, color = "blue", size = 1) +
+    labs(x = "BMI", y = "MTCO1/VDAC1 Ratio", title = "MTCO1/VDAC1 Ratio by BMI for Each Donor") +
+    theme_minimal() +
+    theme(legend.position = "none")  # Hide legend if there are too many donors
+
+# Display the plot
+print(p)
+
+# Fit the linear model
+linear_model <- lm(mtco1_vdac1_ratio ~ age, data = combined_data_mtco1complexIV)
+
+# Print the summary of the linear model to get the slope
+summary(linear_model)
+
+# Create the scatter plot with smoothing line
+p <- ggplot(combined_data_mtco1complexIV, aes(x = age, y = mtco1_vdac1_ratio, color = donor_id)) +
+    geom_point(alpha = 0.6) +
+    geom_smooth(method = "lm", se = FALSE, color = "blue", size = 1) +
+    labs(x = "Age", y = "MRCO1/VDAC1 Ratio", title = "MTCO1/VDAC1 Ratio by Age for Each Donor") +
+    theme_minimal() +
+    theme(legend.position = "none")  # Hide legend if there are too many donors
+
+# Display the plot
+print(p)
+
+# Define custom colors for clusters
+cluster_colors <- c("#1f77b4", "#ff7f0e", "#2ca02c")  # Blue, Orange, Green
+
+# Calculate total number of beta cells in each diabetes group
+beta_cells_total <- combined_data_mtco1complexIV %>%
+    group_by(diabetic_status) %>%
+    summarize(total_beta_cells = n())
+
+# Calculate proportion of beta cells for each diabetes group within each cluster
+beta_cells_proportions <- combined_data_mtco1complexIV %>%
+    group_by(diabetic_status, cluster) %>%
+    summarize(beta_cells_count = n()) %>%
+    left_join(beta_cells_total, by = "diabetic_status") %>%
+    mutate(proportion = beta_cells_count / total_beta_cells)
+
+# Reverse the order of levels for the cluster variable
+beta_cells_proportions$cluster <- factor(beta_cells_proportions$cluster,
+                                         levels = rev(levels(beta_cells_proportions$cluster)))
+
+# Create grouped stacked bar chart
+p <- ggplot(beta_cells_proportions, aes(x = factor(diabetic_status), y = proportion, fill = factor(cluster))) +
+    geom_bar(stat = "identity", position = "stack", width = 0.7) +
+    scale_fill_manual(values = cluster_colors, name = "Expression") +  # Rename fill legend title to "Expression"
+    labs(x = "Diabetes Group", y = "Proportion of Beta Cells", 
+         title = "Proportional Grouped Stacked Bar Chart of Beta Cells by Diabetes Group and Clusters") +
+    theme_minimal() +
+    # Add asterisks for significance
+    geom_text(aes(label = "***"),
+              position = position_stack(vjust = 0.5), size = 5, color = "black")
+
+# Display the plot
+print(p)
+
+# Define custom colors for clusters
+cluster_colors <- c("#1f77b4", "#ff7f0e", "#2ca02c")  # Blue, Orange, Green
+
+# Calculate total number of beta cells in each sex group
+beta_cells_total <- combined_data_mtco1complexIV %>%
+    group_by(Sex) %>%
+    summarize(total_beta_cells = n())
+
+# Calculate proportion of beta cells for each sex group within each cluster
+beta_cells_proportions <- combined_data_mtco1complexIV %>%
+    group_by(Sex, cluster) %>%
+    summarize(beta_cells_count = n()) %>%
+    left_join(beta_cells_total, by = "Sex") %>%
+    mutate(proportion = beta_cells_count / total_beta_cells)
+
+# Create grouped stacked bar chart
+p <- ggplot(beta_cells_proportions, aes(x = Sex, y = proportion, fill = cluster)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.7) +
+    scale_fill_manual(values = cluster_colors, name = "Expression") +  # Change legend title here
+    labs(x = "Sex", y = "Proportion of Beta Cells", 
+         title = "Proportional Grouped Stacked Bar Chart of Beta Cells by Sex and Clusters") +
+    theme_minimal()
+
+# Calculate positions for the asterisks in "Medium Expression" and "High Expression" clusters
+asterisk_positions <- beta_cells_proportions %>%
+    group_by(Sex) %>%
+    mutate(
+        cumsum_proportion = cumsum(proportion),
+        y_position = cumsum_proportion - proportion / 2
+    ) %>%
+    filter(cluster %in% c("Medium Expression", "High Expression"))
+
+# Add asterisks for significance in "Medium Expression" and "High Expression" clusters
+p + geom_text(data = asterisk_positions,
+              aes(label = "***", y = y_position),
+              size = 5, color = "black")
+
+# Identify donor IDs
+unique_donor_ids <- unique(combined_data_ndufb9complexI$donor_id)
+
+# Print the unique donor IDs
+print(unique_donor_ids)
+
+# Create a mapping from donor ID to a sequential number
+donor_id_mapping <- data.frame(donor_id = unique_donor_ids,
+                               donor_number = seq_along(unique_donor_ids))
+
+# Print the mapping (optional)
+print(donor_id_mapping)
+
+# Merge the mapping back into the original data frame
+combined_data_mtco1complexIV <- merge(combined_data_mtco1complexIV, donor_id_mapping, by = "donor_id", all.x = TRUE)
+
+# Print the updated data frame (optional)
+print(combined_data_mtco1complexIV)
+
+# Convert donor_number to factor and reorder levels in ascending order
+combined_data_mtco1complexIV$donor_number <- factor(combined_data_mtco1complexIV$donor_number, levels = unique(combined_data_mtco1complexIV$donor_number))
+
+# Plot donor_number vs mtco1_vdac1_ratio with each donor represented by a unique color
+ggplot(combined_data_mtco1complexIV, aes(x = donor_number, y = mtco1_vdac1_ratio, color = donor_id)) +
+    geom_point() +
+    labs(x = "Donor Number", y = "MTCO1:VDAC1 Ratio", title = "Plot of Donor Number vs MTCO1:VDAC1 Ratio") +
+    theme_minimal() +
+    guides(color = FALSE)  # Removes the legend for donor_id
+
+# Define custom colors for diabetic_status
+custom_colors <- c("Without Diabetes" = "#1f77b4", "With T2D" = "#ff7f0e")
+
+# Plot donor_number vs mtco1_vdac1_ratio with each donor colored by diabetic_status
+ggplot(combined_data_mtco1complexIV, aes(x = donor_number, y = mtco1_vdac1_ratio, color = diabetic_status)) +
+    geom_point() +
+    labs(x = "Donor Number", y = "MTCO1:VDAC1 Ratio", title = "Plot of Donor Number vs MTCO1:VDAC1 Ratio") +
+    scale_color_manual(values = custom_colors, guide = guide_legend(title = "Diabetic Status")) +
+    theme_minimal()
+
+# Convert donor_number to factor and reorder levels in ascending order
+combined_data_mtco1complexIV$donor_number <- factor(combined_data_mtco1complexIV$donor_number, levels = unique(combined_data_mtco1complexIV$donor_number))
+
+# Plot donor_number vs mtco1_vdac1_ratio with each donor colored by cluster
+ggplot(combined_data_mtco1complexIV, aes(x = donor_number, y = mtco1_vdac1_ratio, color = cluster)) +
+    geom_point() +
+    labs(x = "Donor Number", y = "MTCO1:VDAC1 Ratio", title = "Plot of Donor Number vs MTCO1:VDAC1 Ratio") +
+    scale_color_manual(values = cluster_colors) +  # Use custom colors for clusters
+    theme_minimal() +
+    guides(color = guide_legend(title = "Expression"))  # Set legend title for cluster
+
+# Fit a linear model
+model <- lm(mtco1_vdac1_ratio ~ age + bmi + Sex + diabetic_status, data = combined_data_mtco1complexIV)
+
+# Extract residuals
+residuals <- residuals(model)
+
+# Add residuals to the dataset
+combined_data_mtco1complexIV$residuals <- residuals
+
+# Summarize residual differences by cell_type
+summary_stats <- combined_data_mtco1complexIV %>%
+    group_by(cell_type) %>%
+    summarize(
+        mean_residual = mean(residuals),
+        sd_residual = sd(residuals),
+        min_residual = min(residuals),
+        max_residual = max(residuals)
+    )
+
+# Display summary statistics
+print(summary_stats)
+
+# Boxplot of residuals by cell_type
+ggplot(combined_data_mtco1complexIV, aes(x = cell_type, y = residuals, fill = cell_type)) +
+    geom_boxplot() +
+    labs(x = "Cell Type", y = "Residuals of MTCO1:VDAC1 Ratio", 
+         title = "Residual Differences in MTCO1:VDAC1 Ratio by Cell Type") +
+    theme_minimal()
+
+# Assuming you have summary_stats dataframe with the summary statistics
+# Extract necessary summary statistics
+mean_residual <- summary_stats$mean_residual
+sd_residual <- summary_stats$sd_residual
+min_residual <- summary_stats$min_residual
+max_residual <- summary_stats$max_residual
+
+# Plotting the histogram of residuals
+hist(residuals, breaks = 20, col = "skyblue", main = "Histogram of Residuals for Beta Cells",
+     xlab = "Residuals", ylab = "Frequency")
+
+# Add mean, min, and max residuals as vertical lines
+abline(v = mean_residual, col = "red", lwd = 2, lty = 2)
+abline(v = min_residual, col = "blue", lwd = 2, lty = 2)
+abline(v = max_residual, col = "green", lwd = 2, lty = 2)
+
+# Add legend
+legend("topright", legend = c("Mean Residual", "Min Residual", "Max Residual"),
+       col = c("red", "blue", "green"), lty = 2, lwd = 2, cex = 0.8)
+
+# Optionally add a normal distribution curve
+curve(dnorm(x, mean_residual, sd_residual), add = TRUE, col = "black", lwd = 2)
+
+# SPLIT SEX BY DIABETES STATUS --> Define vertical offsets for each sex and plot 
+vertical_offsets_no_t2d <- c(Female = 0.19, Male = 0.11)
+vertical_offsets_with_t2d <- c(Female = 0.15, Male = 0.11)
+
+# Filter data for Without Diabetes
+beta_cells_no_t2d <- combined_data_mtco1complexIV %>%
+    filter(diabetic_status == "Without Diabetes")
+
+# Calculate total number of beta cells in each sex group for Without Diabetes
+beta_cells_total_no_t2d <- beta_cells_no_t2d %>%
+    group_by(Sex) %>%
+    summarize(total_beta_cells = n())
+
+# Calculate proportion of beta cells for each sex group within each cluster for Without Diabetes
+beta_cells_proportions_no_t2d <- beta_cells_no_t2d %>%
+    group_by(Sex, cluster) %>%
+    summarize(beta_cells_count = n()) %>%
+    left_join(beta_cells_total_no_t2d, by = "Sex") %>%
+    mutate(proportion = beta_cells_count / total_beta_cells) %>%
+    group_by(Sex) %>%
+    mutate(
+        cumulative_proportion = cumsum(proportion),
+        y_position = cumulative_proportion - (proportion / 2) + vertical_offsets_no_t2d[Sex]
+    )
+
+# Create the plot for Without Diabetes
+p_no_t2d <- ggplot(beta_cells_proportions_no_t2d, aes(x = Sex, y = proportion, fill = cluster)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.7) +
+    scale_fill_manual(values = cluster_colors, name = "Expression") +
+    labs(x = "Sex", y = "Proportion of Beta Cells", 
+         title = "Proportional Grouped Stacked Bar Chart of Beta Cells by Sex and Clusters (Without Diabetes)") +
+    theme_minimal()
+
+# Add asterisks for significance in each cluster for Without Diabetes
+p_no_t2d <- p_no_t2d + geom_text(data = beta_cells_proportions_no_t2d,
+                                 aes(label = "***", y = y_position),
+                                 size = 5, color = "black")
+
+# Repeat the steps for With Diabetes
+beta_cells_with_t2d <- combined_data_mtco1complexIV %>%
+    filter(diabetic_status == "With T2D")
+
+# Calculate total number of beta cells in each sex group for With Diabetes
+beta_cells_total_with_t2d <- beta_cells_with_t2d %>%
+    group_by(Sex) %>%
+    summarize(total_beta_cells = n())
+
+# Calculate proportion of beta cells for each sex group within each cluster for With Diabetes
+beta_cells_proportions_with_t2d <- beta_cells_with_t2d %>%
+    group_by(Sex, cluster) %>%
+    summarize(beta_cells_count = n()) %>%
+    left_join(beta_cells_total_with_t2d, by = "Sex") %>%
+    mutate(proportion = beta_cells_count / total_beta_cells) %>%
+    group_by(Sex) %>%
+    mutate(
+        cumulative_proportion = cumsum(proportion),
+        y_position = cumulative_proportion - (proportion / 2) + vertical_offsets_with_t2d[Sex]
+    )
+
+# Create the plot for With Diabetes
+p_with_t2d <- ggplot(beta_cells_proportions_with_t2d, aes(x = Sex, y = proportion, fill = cluster)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.7) +
+    scale_fill_manual(values = cluster_colors, name = "Expression") +
+    labs(x = "Sex", y = "Proportion of Beta Cells", 
+         title = "Proportional Grouped Stacked Bar Chart of Beta Cells by Sex and Clusters (With T2D)") +
+    theme_minimal()
+
+# Add asterisks for significance in each cluster for With Diabetes
+p_with_t2d <- p_with_t2d + geom_text(data = beta_cells_proportions_with_t2d,
+                                     aes(label = "***", y = y_position),
+                                     size = 5, color = "black")
+
+# Print both plots
+print(p_no_t2d)
+print(p_with_t2d)
+
+library(gridExtra)
+
+# Define custom colors
+custom_colors <- c(Female = "#1f77b4", Male = "#ff7f0e")
+
+# Ensure cluster levels are ordered
+combined_data_mtco1complexIV$cluster <- factor(combined_data_mtco1complexIV$cluster, 
+                                                     levels = c("Low Expression", "Medium Expression", "High Expression"))
+
+# Function to create the violin plot for a subset of data
+create_violin_plot <- function(data, title) {
+    ggplot(data, aes(x = cluster, y = mtco1_vdac1_ratio, fill = Sex)) +
+        geom_violin(aes(fill = Sex), position = position_dodge(width = 0.9), scale = "width", alpha = 0.7) +
+        stat_summary(fun = "mean", geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(width = 0.9)) +
+        scale_fill_manual(values = custom_colors) +
+        labs(x = "Expression Level", y = "MTCO1/VDAC1 Ratio", title = title) +
+        theme_minimal() +
+        theme(legend.title = element_blank()) +
+        annotate("text", x = 2, y = max(data$mtco1_vdac1_ratio, na.rm = TRUE) + 0.05, label = "***", size = 6) +
+        annotate("text", x = 3, y = max(data$mtco1_vdac1_ratio, na.rm = TRUE) + 0.05, label = "***", size = 6) + annotate("text", x = 1, y = max(data$mtco1_vdac1_ratio, na.rm = TRUE) + 0.05, label = "***", size = 6)
+}
+
+# Filter data for each diabetic status
+data_no_t2d <- combined_data_mtco1complexIV %>%
+    filter(diabetic_status == "Without Diabetes")
+data_with_t2d <- combined_data_mtco1complexIV %>%
+    filter(diabetic_status == "With T2D")
+
+# Create violin plots for each diabetic status
+p_no_t2d <- create_violin_plot(data_no_t2d, "MTCO1/VDAC1 Ratio by Expression Level and Sex (Without Diabetes)")
+p_with_t2d <- create_violin_plot(data_with_t2d, "MTCO1/VDAC1 Ratio by Expression Level and Sex (With T2D)")
+
+# Display the plots side by side
+grid.arrange(p_no_t2d, p_with_t2d, ncol = 2)
  
