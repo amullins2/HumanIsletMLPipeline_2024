@@ -58,12 +58,12 @@ The analysis utilises K-means clustering to group beta cells based on several pa
 ### Visualization
 
 Generates various plots, including:
-     - Alpha-beta ratio by diabetes staus.
-     - Alpha-beta ratio by sex.
-     - Proportions of cell types by diabetic status.
-     - Islet area clusters vs. alpha-beta ratio.
-     - Age group vs. alpha-beta ratio.
-     - BMI vs. alpha-beta ratio.
+- Alpha-beta ratio by diabetes staus.
+- Alpha-beta ratio by sex.
+- Proportions of cell types by diabetic status.
+- Islet area clusters vs. alpha-beta ratio.
+- Age group vs. alpha-beta ratio.
+- BMI vs. alpha-beta ratio.
 
 
 
