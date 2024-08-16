@@ -44,7 +44,7 @@ The analysis utilises K-means clustering to group beta cells based on several pa
 The repository includes various plots to help visualise and interpret the data:
 - **Bar Chart of Beta Cell Counts by Diabetes Status**: Identifies the significantly lower amount of beta-cells quantified in T2D group compared to those without diabetes. 
 - **Violin Plots by Sex and Diabetes Status**: Illustrates the distribution of OXPHOS Protein/VDAC1 ratios across different expression levels, stratified by sex and diabetes status.
-- - **Proportional Stacked Bar Charts**: Displays the distribution of beta cells across OXPHOS Protein/VDAC1 ratio expression clusters, grouped by sex and diabetes status.
+- **Proportional Stacked Bar Charts**: Displays the distribution of beta cells across OXPHOS Protein/VDAC1 ratio expression clusters, grouped by sex and diabetes status.
 - **Residual Analysis by Cell Type**: Boxplots of residuals from a linear model predicting NDUFB8/VDAC1 ratios, categorized by cell type.
 - **Scatter Plots by BMI and Age**: Shows the relationship between BMI, age, and XPHOS Protein/VDAC1 ratios, including linear regression lines.
 
