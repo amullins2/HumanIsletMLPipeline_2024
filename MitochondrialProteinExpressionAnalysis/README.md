@@ -36,7 +36,7 @@ library(lme4)
 
 ### K-Means Clustering
 The analysis utilises K-means clustering to group beta cells based on several parameters:
-- **Parameters**: Sex, BMI, age, and OXPHOS protein intensity (e.g., MTCO1 and NDUFB8) normalised against mitochondrial mass.
+- **Parameters**: Sex, BMI, age, and OXPHOS protein intensity (e.g., MTCO1 and NDUFB8) normalised against mitochondrial mass (VDAC1).
 - **Elbow Plots**: To determine the number of clusters approporiate, elbow plots were produced. 
 - **Clusters**: Beta cells are grouped into clusters based on these parameters to uncover patterns and relationships.
 
