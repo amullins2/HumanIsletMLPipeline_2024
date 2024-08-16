@@ -33,7 +33,7 @@ This image analysis pipeline was developed as part of a study exploring islet co
 - **Pixel Classification**: Ilastik (ImageJ/Fiji Macro).
 - **Nuclei Segmentation**: Stardist in ImageJ/Fiji (ImageJ/Fiji Macro).
 - **Cell Segmentation and Quantification**: CellProfiler.
-- **Data Analysis**: RStudio.
+- **Data Analysis**: RStudio and SPSS.
 
 ## Installation and Setup
 1. **ImageJ/Fiji**: Download and install Fiji, which comes bundled with Stardist, from [here](https://imagej.net/software/fiji/).
