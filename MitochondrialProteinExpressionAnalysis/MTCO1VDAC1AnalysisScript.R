@@ -467,4 +467,32 @@ Error in -c("diabetic_status") : invalid argument to unary operator
      geom_bar(stat = "identity", position = "dodge") +
      labs(x = "Cluster", y = "Count", fill = "Diabetic Status") +
      theme_minimal()
+
+# Load necessary libraries, to create sex proportion plots
+library(dplyr)
+library(ggplot2)
+
+# Create the data frame with percentages
+data_percent <- data.frame(
+    Cluster = factor(rep(c("high", "medium", "low"), each = 2), levels = c("low", "medium", "high")),  # Ensure Cluster levels are ordered
+    Sex = factor(rep(c(1, 2), 3), labels = c("Female", "Male")),
+    Percentage = c(36.6, 12.4, 42.3, 37.2, 21.1, 50.4)
+)
+
+# Define Tableau colors
+tableau_colors <- c("#4E79A7", "#F28E2B", "#E15759")
+
+# Add a column for positioning the asterisks
+data_percent <- data_percent %>%
+    group_by(Sex) %>%
+    mutate(ypos = cumsum(Percentage) - 0.5 * Percentage)
+
+# Create the stacked bar plot with asterisks
+ggplot(data_percent, aes(x = Sex, y = Percentage, fill = Cluster)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(y = ypos, label = "***"), vjust = 0.5, color = "black", size = 5) +
+    labs(x = "Sex", y = "Percentage (%)", title = "Beta-Cell Proportions by Cluster and Sex") +
+    scale_fill_manual(values = tableau_colors, labels = c("Low", "Medium", "High")) +
+    theme_minimal() +
+    theme(legend.title = element_blank())
  
