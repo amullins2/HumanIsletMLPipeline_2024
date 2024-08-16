@@ -47,11 +47,14 @@ library(lme4)
    - Merges filtered data for insulin and glucagon based on `ImageNumber`.
    - Filters merged data to find cells that are both insulin and glucagon positive.
 
-### Analysis
+## Analysis
 
-1. **Clustering**:
-   - Performs k-means clustering to categorize islets based on islet area.
-   - Analyses and visualizes the clusters.
+### K-Means Clustering
+The analysis utilises K-means clustering to group beta cells based on several parameters:
+- **Parameters**: Sex, BMI, age, and OXPHOS protein intensity (e.g., MTCO1 and NDUFB8) normalised against mitochondrial mass (VDAC1).
+- **Elbow Plots**: To determine the number of clusters approporiate, elbow plots were produced. 
+- **Clusters**: Beta cells are grouped into clusters based on these parameters to uncover patterns and relationships.
+
 
 ### Visualization
 
