@@ -53,9 +53,9 @@ This image analysis pipeline was developed as part of a study exploring islet co
 ## Contact Information
 For any questions or further assistance, please contact:
 - Alana Mullins (Primary Contact) - a.mullins2@newcastle.ac.uk
-- Catherine Arden
-- Laura Greaves
-- Mark Walker
+- Dr Catherine Arden
+- Dr Laura Greaves
+- Dr Mark Walker
 
 Biosciences Institute, Newcastle University, Newcastle Upon Tyne, UK
 
