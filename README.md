@@ -58,6 +58,6 @@ For any questions or further assistance, please contact:
 Biosciences Institute, Newcastle University, Newcastle Upon Tyne, UK
 
 ## Acknowledgements
-This project was developed as part of a study funded by Newcastle University. We extend our deepest gratitude to the Bioimaging and Image Analysis Units at Newcastle University, particularly to George Merces. His continued training and guidance were instrumental to the project's success. The images and data generated from this pipeline were crucial for understanding islet composition and mitochondrial function in the context of ageing and Type 2 Diabetes.
+This project was developed as part of a study funded by Newcastle University. We extend our deepest gratitude to the Bioimaging and Image Analysis Units at Newcastle University, particularly to George Merces. His continued training and guidance were instrumental to the project's success. The images and data generated from this pipeline were crucial for understanding islet composition and mitochondrial OXPHOS protein expression in the context of ageing and T2D.
 
 
