@@ -16,7 +16,7 @@ The primary goals of this script are to:
 ## Prerequisites
 
 - R (version 4.0 or higher)
-- Required R packages: `readr`, `readxl`, `dplyr`, `ggplot2`, `lmerTest`
+- Required R packages: `readr`, `readxl`, `dplyr`, `ggplot2`, `tidyr`, `lmerTest`
 
 Install the necessary packages using the following commands:
 
@@ -55,7 +55,7 @@ The analysis utilises K-means clustering to group beta cells based on several pa
 - **Elbow Plots**: To determine the number of clusters approporiate, elbow plots were produced. 
 - **Clusters**: Beta cells are grouped into clusters based on these parameters to uncover patterns and relationships.
 
-### Visualization
+### Visualisation
 
 Generates various plots, including:
 - Alpha-beta ratio by diabetes staus.
