@@ -29,7 +29,7 @@ library(lme4)
 ## Repository Contents
 
 ### Scripts
-1. **`NDUFB8VDAC1AnalysisScript.R`**: This script quantifies and analyzes the NDUFB8/VDAC1 ratio in beta cells. It handles preprocessing, filtering, and clustering tasks.
+1. **`NDUFB8VDAC1AnalysisScript.R`**: This script quantifies and analyses the NDUFB8/VDAC1 ratio in beta cells. It handles preprocessing, filtering, and clustering tasks.
 2. **`MTCO1VDAC1AnalysisScript.R`**: This script is dedicated to the quantification and analysis of the MTCO1/VDAC1 ratio, following similar preprocessing and clustering steps as the NDUFB8 script.
 
 ## Script Components
