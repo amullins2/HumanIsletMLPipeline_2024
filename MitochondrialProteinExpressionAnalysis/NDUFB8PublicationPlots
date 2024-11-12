@@ -1,0 +1,65 @@
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Reassign diabetic_status 
+combined_data_ndufb9complexI$diabetic_status <- factor(combined_data_ndufb9complexI$diabetic_status,
+                                                       levels = c(1, 2),
+                                                       labels = c("Without Diabetes", "With Type 2 Diabetes"))
+
+# Define custom colours 
+cluster_colors <- c("#8AA9D2", "#7883BA", "#4C5988")
+status_colors <- c("Without Diabetes" = "#7883BA", "With Type 2 Diabetes" = "#8AA9D2")
+
+# plot rules
+plot_theme <- theme_minimal() +
+  theme(axis.text = element_text(size = 38),
+        axis.title = element_text(size = 40),
+        legend.text = element_text(size = 38),
+        legend.title = element_text(size = 40),
+        legend.position = "top",
+        legend.key.size = unit(3, "lines"),
+        plot.margin = unit(c(1, 1, 1, 1), "cm"))
+
+# Jitter and box plot
+ggplot(combined_data_ndufb9complexI, aes(x = donor_order, y = ndufb8_vdac1_ratio, color = diabetic_status)) +
+  geom_jitter(width = 0.1, alpha = 0.5, size = 2) +  # Add jittered points
+  geom_boxplot(outlier.shape = NA, alpha = 0.6, color = "black") +  # Overlay boxplot
+  labs(x = "Donor ID", y = "NDUFB8/VDAC1 Ratio") +
+  scale_color_manual(values = status_colors, name = "Diabetes Status") +
+  plot_theme +
+  guides(color = guide_legend(override.aes = list(size = 7)))  # Increase size of legend dots
+
+# Cell proportions
+beta_cells_total <- combined_data_ndufb9complexI %>%
+  filter(cell_type == "beta cell") %>%
+  group_by(diabetic_status) %>%
+  summarize(total_beta_cells = n(), .groups = 'drop')
+
+beta_cells_proportions <- combined_data_ndufb9complexI %>%
+  filter(cell_type == "beta cell") %>%
+  group_by(diabetic_status, cluster) %>%
+  summarize(beta_cells_count = n(), .groups = 'drop') %>%
+  left_join(beta_cells_total, by = "diabetic_status") %>%
+  mutate(proportion = beta_cells_count / total_beta_cells) %>%
+  mutate(cluster = recode_factor(cluster, `1` = "Low Expression", `2` = "Medium Expression", `3` = "High Expression"),
+         cluster = factor(cluster, levels = c("High Expression", "Medium Expression", "Low Expression")))
+
+# Stacked bar chart
+ggplot(beta_cells_proportions, aes(x = factor(diabetic_status, labels = c("Without\nDiabetes", "With Type\n2 Diabetes")), y = proportion, fill = cluster)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.6) +
+  scale_fill_manual(values = cluster_colors, name = "NDUFB8/VDAC1 Ratio\nExpression Cluster") +
+  labs(x = "Diabetes Status", y = "Proportion of Beta Cells") +
+  plot_theme +
+  geom_text(aes(label = "***"), position = position_stack(vjust = 0.5), size = 15, color = "black")
+
+# box plot with summary 
+ggplot(combined_data_ndufb9complexI, aes(x = diabetic_status, y = ndufb8_vdac1_ratio)) +
+  geom_jitter(aes(color = diabetic_status), width = 0.4, alpha = 0.6, size = 4) +
+  stat_summary(fun = mean, geom = "point", shape = 18, size = 11, color = "black") +
+  scale_color_manual(values = status_colors) +
+  labs(x = "Diabetes Status", y = "NDUFB8/VDAC1 Ratio") +
+  annotate("text", x = 1.5, y = max(combined_data_ndufb9complexI$ndufb8_vdac1_ratio) * 1.05, label = "***", size = 40, hjust = 0.5) +
+  theme_minimal() +
+  theme(legend.position = "none", axis.text = element_text(size = 86), axis.title = element_text(size = 90)) +
+  scale_x_discrete(labels = c("Without\nDiabetes", "With Type\n2 Diabetes"))
