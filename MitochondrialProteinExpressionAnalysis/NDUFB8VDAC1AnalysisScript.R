@@ -17,24 +17,28 @@ thresholds <- c(
     "PT0267_0090" = 0.2, "PT0267_0095" = 0.14
 )
 
+# Filter based on insulin threshold
+filtered_data_ndufb8 <- merged_data_ndufb8 %>%
+    filter(Intensity_MeanIntensity_insulin >= thresholds[as.character(donor_id)])
+
 # Filter for beta cells and counts by donor and diabetic status
 beta_cell_counts <- merged_data_ndufb8 %>%
     filter(cell_type == "beta cell") %>%
     group_by(donor_id, diabetic_status) %>%
     summarize(total_beta_cells = n(), .groups = "drop")
 
-# Pivot table for comparison
+# Pivot table 
 beta_cell_counts_pivot <- beta_cell_counts %>%
     pivot_wider(names_from = diabetic_status, values_from = total_beta_cells)
 
-# Scatter plot comparing beta cell counts for diabetic vs. non-diabetic
+# Scatter plot  beta cell counts for diabetic vs. non-diabetic
 ggplot(beta_cell_counts_pivot, aes(x = `1`, y = `2`)) +
     geom_point() +
     geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
     labs(x = "Non-Diabetic", y = "Type 2 Diabetic", title = "Comparison of Beta Cell Counts") +
     theme_minimal()
 
-# Aggregate beta cell counts by diabetic status
+# beta cell counts by diabetic status
 beta_cell_counts_summary <- beta_cell_counts %>%
     group_by(diabetic_status) %>%
     summarize(total_beta_cells = sum(total_beta_cells), .groups = "drop")
@@ -46,11 +50,7 @@ ggplot(beta_cell_counts_summary, aes(x = factor(diabetic_status), y = total_beta
     labs(x = "Diabetic Status", y = "Total Beta Cells", fill = "Diabetic Status") +
     theme_minimal()
 
-# Filter based on insulin threshold
-filtered_data_ndufb8 <- merged_data_ndufb8 %>%
-    filter(Intensity_MeanIntensity_insulin >= thresholds[as.character(donor_id)])
-
-# Columns to keep and add cell type
+#Columns to keep and add cell type
 filtered_data_ndufb82 <- filtered_data_ndufb8 %>%
     select(ImageNumber, donor_id, islet_number, Intensity_MeanIntensity_insulin,
            Intensity_MeanIntensity_vdac1, Intensity_MeanIntensity_ndufb8) %>%
@@ -61,7 +61,7 @@ avg_ndufb8_per_islet <- filtered_data_ndufb8 %>%
     group_by(donor_id, islet_number) %>%
     summarize(avg_ndufb8 = mean(Intensity_MeanIntensity_ndufb8, na.rm = TRUE), .groups = "drop")
 
-# Plot average NDUFB8 intensity
+# Plot NDUFB8 intensity
 ggplot(avg_ndufb8_per_islet, aes(x = donor_id, y = avg_ndufb8, color = islet_number)) +
     geom_point() +
     labs(x = "Donor ID", y = "Average Intensity of NDUFB8") +
@@ -70,7 +70,7 @@ ggplot(avg_ndufb8_per_islet, aes(x = donor_id, y = avg_ndufb8, color = islet_num
     ggtitle("Average NDUFB8 Intensity per Islet per Donor") +
     guides(color = "none")
 
-# Non-diabetic and Type 2 diabetic plot functions
+# Non-diabetic and Type 2 diabetic plot
 plot_by_status <- function(data, status, color) {
     ggplot(subset(data, diabetic_status == status), aes(x = donor_id, y = Intensity_MeanIntensity_ndufb8)) +
         geom_point(color = color) +
@@ -79,8 +79,25 @@ plot_by_status <- function(data, status, color) {
         theme(legend.position = "none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 }
 
-# Arrange plots side-by-side
 plot_by_status(merged_data_ndufb8, 1, "blue") + plot_by_status(merged_data_ndufb8, 2, "red")
+
+wss <- sapply(1:10, function(k) {
+  kmeans_result <- kmeans(your_data, centers = k, nstart = 25)
+  return(kmeans_result$tot.withinss)  # Total within-cluster sum of squares (WSS)
+})
+
+# elbow plot
+elbow_plot <- ggplot(data.frame(K = 1:10, WSS = wss), aes(x = K, y = WSS)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Number of Clusters", y = "Total Within-Cluster Sum of Squares (WSS)",
+       title = "Elbow Plot for Optimal Number of Clusters") +
+  theme_minimal()
+
+print(elbow_plot)
+
+# k-means clustering 
+kmeans_result <- kmeans(your_data, centers = 3, nstart = 25)
 
 # Final plot for NDUFB8/VDAC1 ratio by cluster and sex
 combined_data_ndufb9complexI <- combined_data_ndufb9complexI %>%
@@ -157,40 +174,7 @@ create_violin_plot <- function(data, title) {
 # Apply functions to the data
 combined_data_ndufb9complexI <- fit_model(combined_data_ndufb9complexI)
 
-# Residuals
-summary_stats <- summarize_residuals(combined_data_ndufb9complexI)
 
 # Plot donor_number vs ndufb8_vdac1_ratio
 print(create_donor_plot(combined_data_ndufb9complexI, "Plot of Donor Number vs NDUFB8:VDAC1 Ratio"))
-
-# Plot residual boxplot
-print(plot_residual_boxplot(combined_data_ndufb9complexI))
-
-# Plot residual histogram
-plot_residual_histogram(combined_data_ndufb9complexI$residuals, summary_stats)
-
-# Filter data for Without Diabetes and With Diabetes
-data_no_t2d <- combined_data_ndufb9complexI %>%
-    filter(diabetic_status == "Without Diabetes")
-data_with_t2d <- combined_data_ndufb9complexI %>%
-    filter(diabetic_status == "With T2D")
-
-# Define vertical offsets for each sex
-vertical_offsets_no_t2d <- c(Female = 0.19, Male = 0.11)
-vertical_offsets_with_t2d <- c(Female = 0.15, Male = 0.11)
-
-# Create proportion plots
-p_no_t2d <- create_proportion_plot(data_no_t2d, vertical_offsets_no_t2d, "Proportional Beta Cells by Sex and Clusters (Without Diabetes)")
-p_with_t2d <- create_proportion_plot(data_with_t2d, vertical_offsets_with_t2d, "Proportional Beta Cells by Sex and Clusters (With T2D)")
-
-# Print plots
-print(p_no_t2d)
-print(p_with_t2d)
-
-# Create violin plots for each diabetic status
-p_violin_no_t2d <- create_violin_plot(data_no_t2d, "NDUFB8/VDAC1 Ratio by Expression Level and Sex (Without Diabetes)")
-p_violin_with_t2d <- create_violin_plot(data_with_t2d, "NDUFB8/VDAC1 Ratio by Expression Level and Sex (With T2D)")
-
-# Display violin plots side by side
-grid.arrange(p_violin_no_t2d, p_violin_with_t2d, ncol = 2)
 
