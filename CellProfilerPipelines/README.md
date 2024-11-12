@@ -39,7 +39,16 @@ In the analysis of the **islet composition staining panel**, after nuclei segmen
    - **Parameters**:
      - **Object Size Measurement**: Mean area of segmented objects (cells)
 
-7. **ExportToSpreadsheet Module**: This module is used to export the analysis results to a .csv file for further downstream analysis.
+7. **CellProfiler Neighborhood Analysis within Islet Composition Staining Panel**
+
+   To compute inter-islet differences, neighborhood analysis was performed on the **islet composition staining panel** within **CellProfiler** (Figure 2). This analysis provides insights into cellular interactions within islets, focusing on the connections between alpha and beta cells.
+
+   - The **ClassifyObjects** module is applied to assign alpha and beta cell donor-based threshold values, which are used to define the two distinct cell types (alpha and beta cells) within the islets.
+   - The **MeasureObjectNeighbours** module quantifies the number of inter-islet cell connections for each donor, providing proportions for alpha-alpha, beta-beta, and beta-alpha inter-islet cell interactions.
+
+   This analysis allows us to understand the spatial relationships between different cell types within islets and the potential effects of **Type 2 diabetes** on these cellular interactions.
+
+8. **ExportToSpreadsheet Module**: This module is used to export the analysis results to a .csv file for further downstream analysis.
    - **Parameters**:
      - **Output Directory**: `/path/to/output/folder`
 
