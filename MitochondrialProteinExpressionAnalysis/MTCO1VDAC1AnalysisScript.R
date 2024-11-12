@@ -1,4 +1,5 @@
-# Load necessary library
+
+# Libraries
 library(readxl)
 library(dplyr)
 library(ggplot2)
@@ -8,17 +9,17 @@ library(tidyr)
 MyExpt_cellboundaries <- read_excel(file.choose()) # or replace with the file path
 ImageInfo_CellProfilerFiles <- read_excel(file.choose(), sheet = "CellProfiler")
 
-# Assign data to new variables for convenience
+# Assign data
 rawdata <- MyExpt_cellboundaries
 cpdata <- ImageInfo_CellProfilerFiles
 
 # Merge datasets based on 'ImageNumber'
 merged_dataset <- merge(cpdata, rawdata, by = "ImageNumber", all = TRUE)
 
-# Ensure 'Intensity_MeanIntensity_insulin' is numeric
+# Ensure 'Intensity_MeanIntensity_insulin' numeric
 merged_dataset$Intensity_MeanIntensity_insulin <- as.numeric(as.character(merged_dataset$Intensity_MeanIntensity_insulin))
 
-# Define insulin positivity thresholds
+# Insulin positivity thresholds
 thresholds <- c(
     "21112011" = 0.08, "23012011" = 0.065, "26102010" = 0.15, "28052013" = 0.05,
     "29062012" = 0.09, "HP10062013" = 0.035, "HP13062016" = 0.05, "HP19022013" = 0.05,
@@ -29,21 +30,21 @@ thresholds <- c(
     "PT0267_0095" = 0.07
 )
 
-# Check for any missing donor IDs in thresholds
+# Check for  missing donor IDs in thresholds
 missing_thresholds <- setdiff(unique(merged_dataset$donor_id), names(thresholds))
 if (length(missing_thresholds) > 0) {
     stop("Thresholds missing for the following donor IDs: ", paste(missing_thresholds, collapse = ", "))
 }
 
-# Filter insulin-positive cells based on donor-specific thresholds
+# Filter insulin-positive cells 
 filtered_data <- merged_dataset %>%
     filter(Intensity_MeanIntensity_insulin >= thresholds[as.character(donor_id)]) %>%
     mutate(Intensity_MeanIntensity_mtco1 = as.numeric(as.character(Intensity_MeanIntensity_mtco1)))
 
-# Save filtered data to a CSV file
+# Save CSV file
 write.csv(filtered_data, "filtered_data.csv", row.names = FALSE)
 
-# Plot mean intensity of MTCO1, color by diabetic status, and fill by age gradient
+# Plot mean intensity of MTCO1
 ggplot(filtered_data, aes(x = donor_id, y = Intensity_MeanIntensity_mtco1, 
                           color = factor(diabetic_status), fill = age)) +
     geom_point(shape = 21, size = 3) +
@@ -54,10 +55,10 @@ ggplot(filtered_data, aes(x = donor_id, y = Intensity_MeanIntensity_mtco1,
     facet_wrap(~ factor(diabetic_status)) +
     theme_minimal()
 
-# Display the structure of the final dataset
+# Display final dataset
 str(filtered_data)
 
-# 1. Reshape and Transform Data
+# transform data 
 reshaped_data <- tidyr::pivot_longer(
   combined_data_mtco1complexIV,
   cols = starts_with("Intensity"),
@@ -69,7 +70,7 @@ reshaped_data <- tidyr::pivot_longer(
 reshaped_data <- reshaped_data %>%
   mutate(islet_id = gsub("^.*_", "", Measurement))
 
-# 2. Jitter Plot for Donor Intensity (VDAC1)
+# jitter plot for VDAC1
 jitter_plot <- ggplot(reshaped_data, aes(x = donor_id, y = Intensity, color = donor_id)) +
   geom_jitter(position = position_jitter(width = 0.3), alpha = 0.5) +
   labs(x = "Donor ID", y = "Intensity of VDAC1") +
@@ -90,12 +91,27 @@ ggplot(merged_data, aes(x = factor(diabetic_status, labels = c("Non-Diabetic", "
   theme_minimal() +
   scale_color_manual(values = c("#4C5988", "#FF7F0E"))
 
-#  K-Means Clustering
+# K-Means Clustering 
 clustering_data <- merged_data %>%
   select(normalised_intensity_mtco1, Intensity_MeanIntensity_vdac1, age, bmi, Sex = `Sex (F=1, M=2)`)
 
+# Set a range of clusters to test for the optimal number
+wss <- sapply(1:10, function(k) {
+  kmeans(clustering_data %>% select(-diabetic_status), centers = k, nstart = 25)$tot.withinss
+})
+
+# Elbow plot 
+elbow_plot <- ggplot(data.frame(Clusters = 1:10, WSS = wss), aes(x = Clusters, y = WSS)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Number of Clusters", y = "Total Within-Cluster Sum of Squares") +
+  theme_minimal()
+
+print(elbow_plot)
+
+# set optimal clusters
 set.seed(123)
-kmeans_result <- kmeans(clustering_data %>% select(-diabetic_status), centers = 2)
+kmeans_result <- kmeans(clustering_data %>% select(-diabetic_status), centers = 3, nstart = 25)
 merged_data$cluster <- as.factor(kmeans_result$cluster)
 
 # Cluster Counts for Diabetic Status
@@ -107,77 +123,3 @@ cluster_counts <- merged_data %>%
 donor_ids_to_remove <- c("HP13062016", "HP28052016", "HP19022013", "PT0267_0034")
 filtered_data <- combined_data_mtco1complexIV %>%
   filter(!donor_id %in% donor_ids_to_remove)
-
-# Violin Plot by Cluster and Sex
-ggplot(filtered_data, aes(x = cluster, y = normalised_intensity_mtco1, fill = Sex)) +
-  geom_violin(position = position_dodge(width = 0.9), alpha = 0.7, scale = "width") +
-  stat_summary(fun = mean, geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(width = 0.9)) +
-  scale_fill_manual(values = c("#1f77b4", "#ff7f0e")) +
-  labs(x = "Expression Level", y = "MTCO1/VDAC1 Ratio") +
-  theme_minimal() +
-  theme(legend.title = element_blank())
-
-# Helper function to calculate beta cell proportions by sex and cluster
-calculate_beta_cell_proportions <- function(data, sex_offsets) {
-  total_cells <- data %>%
-    group_by(Sex) %>%
-    summarise(total_beta_cells = n())
-  
-  data %>%
-    group_by(Sex, cluster) %>%
-    summarise(beta_cells_count = n()) %>%
-    left_join(total_cells, by = "Sex") %>%
-    mutate(proportion = beta_cells_count / total_beta_cells) %>%
-    group_by(Sex) %>%
-    mutate(
-      cumulative_proportion = cumsum(proportion),
-      y_position = cumulative_proportion - (proportion / 2) + sex_offsets[Sex]
-    )
-}
-
-# Helper function to create a stacked bar chart with asterisks
-create_stacked_bar_chart <- function(data, title) {
-  ggplot(data, aes(x = Sex, y = proportion, fill = cluster)) +
-    geom_bar(stat = "identity", position = "stack", width = 0.7) +
-    scale_fill_manual(values = cluster_colors, name = "Expression") +
-    labs(x = "Sex", y = "Proportion of Beta Cells", title = title) +
-    geom_text(aes(label = "***", y = y_position), size = 5, color = "black") +
-    theme_minimal()
-}
-
-# Calculate proportions and plot for each diabetic status
-sex_offsets_no_t2d <- c(Female = 0.19, Male = 0.11)
-sex_offsets_with_t2d <- c(Female = 0.15, Male = 0.11)
-
-beta_cells_proportions_no_t2d <- calculate_beta_cell_proportions(
-  combined_data_mtco1complexIV %>% filter(diabetic_status == "Without Diabetes"),
-  sex_offsets_no_t2d
-)
-beta_cells_proportions_with_t2d <- calculate_beta_cell_proportions(
-  combined_data_mtco1complexIV %>% filter(diabetic_status == "With T2D"),
-  sex_offsets_with_t2d
-)
-
-# Plotting both charts
-p_no_t2d <- create_stacked_bar_chart(beta_cells_proportions_no_t2d, "Proportional Grouped Stacked Bar Chart (Without Diabetes)")
-p_with_t2d <- create_stacked_bar_chart(beta_cells_proportions_with_t2d, "Proportional Grouped Stacked Bar Chart (With Type 2 Diabetes)")
-
-# Print plots
-print(p_no_t2d)
-print(p_with_t2d)
-
-# Define function for creating violin plots by cluster and sex
-create_violin_plot <- function(data, title) {
-  ggplot(data, aes(x = cluster, y = mtco1_vdac1_ratio, fill = Sex)) +
-    geom_violin(position = position_dodge(width = 0.9), scale = "width", alpha = 0.7) +
-    stat_summary(fun = "mean", geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(width = 0.9)) +
-    scale_fill_manual(values = custom_colors) +
-    labs(x = "Expression Level", y = "MTCO1/VDAC1 Ratio", title = title) +
-    theme_minimal() +
-    theme(legend.title = element_blank())
-}
-
-# Create and print violin plots
-p_violin <- create_violin_plot(combined_data_mtco1complexIV, "MTCO1/VDAC1 Ratio by Cluster and Sex")
-print(p_violin)
-
