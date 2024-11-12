@@ -1,0 +1,80 @@
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Relabel and reformat diabetic_status in the dataset
+merged_countsCLUSTER <- merged_countsCLUSTER %>%
+  mutate(diabetic_status = recode(diabetic_status, "With T2D" = "With Type 2 Diabetes"),
+         diabetic_status = factor(diabetic_status, levels = c("Without Diabetes", "With Type 2 Diabetes")))
+
+# Define color schemes
+diabetes_colors <- c("Without Diabetes" = "#4C5988", "With Type 2 Diabetes" = "#8AA9D2")
+sex_colors <- c("Female" = "#4C5988", "Male" = "#8AA9D2")
+
+# Create alpha:beta ratio box plot by diabetic status
+p_diabetes <- ggplot(merged_countsCLUSTER, aes(x = diabetic_status, y = alpha_beta_ratio, fill = diabetic_status, color = diabetic_status)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0, size = 0.5) +
+  geom_jitter(alpha = 0.6, size = 1.5, width = 0.3) +
+  scale_fill_manual(values = diabetes_colors) +
+  scale_color_manual(values = diabetes_colors) +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 18),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20),
+        legend.position = "none") +
+  labs(x = "Diabetes Status", y = "Alpha: Beta Cell Ratio") +
+  annotate("text", x = 1.5, y = max(merged_countsCLUSTER$alpha_beta_ratio, na.rm = TRUE) * 1.1, label = "***", size = 5)
+
+# Sample cell connection data for stacked bar chart
+contact_data <- data.frame(
+  diabetic_status = factor(c("With Type 2 Diabetes", "Without Diabetes"), levels = c("Without Diabetes", "With Type 2 Diabetes")),
+  alpha_alpha = c(0.164, 0.213),
+  beta_alpha = c(0.239, 0.263),
+  beta_beta = c(0.597, 0.525)
+)
+
+# Reshape data to long format
+contact_data_long <- contact_data %>%
+  pivot_longer(cols = c(alpha_alpha, beta_alpha, beta_beta), names_to = "contact_type", values_to = "proportion")
+
+# Define custom colors for cell connections
+contact_colors <- c("alpha_alpha" = "#8AA9D2", "beta_alpha" = "#7883BA", "beta_beta" = "#4C5988")
+
+# Stacked bar chart of cell connections
+p_contact <- ggplot(contact_data_long, aes(x = diabetic_status, y = proportion, fill = contact_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = contact_colors, labels = c("Alpha-Alpha", "Beta-Alpha", "Beta-Beta")) +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 18),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20)) +
+  labs(x = "Diabetes Status", y = "Cell Connection Proportions", fill = "Cell Connection Proportions") +
+  geom_text(data = data.frame(diabetic_status = c("Without Diabetes", "With Type 2 Diabetes"),
+                              y_position = c(0.85, 0.27),
+                              contact_type = c("alpha_alpha", "beta_beta"),
+                              label = "***"),
+            aes(x = diabetic_status, y = y_position, label = label), size = 5, vjust = -0.5)
+
+# Ensure 'Sex' factor levels and create box plot by sex
+merged_countsCLUSTER$Sex <- factor(merged_countsCLUSTER$Sex, levels = c("Female", "Male"))
+
+p_sex <- ggplot(merged_countsCLUSTER, aes(x = Sex, y = alpha_beta_ratio, fill = Sex, color = Sex)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0, size = 0.5) +
+  geom_jitter(alpha = 0.6, size = 1.5, width = 0.3) +
+  scale_fill_manual(values = sex_colors) +
+  scale_color_manual(values = sex_colors) +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 38),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),
+        legend.position = "none") +
+  labs(x = "Sex", y = "Alpha: Beta Cell Ratio") +
+  annotate("text", x = 1.5, y = max(merged_countsCLUSTER$alpha_beta_ratio, na.rm = TRUE) * 1.05, label = "**", size = 10)
+
+# Display plots
+p_diabetes
+p_contact
+p_sex
