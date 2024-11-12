@@ -4,8 +4,6 @@ This README provides an overview of the steps involved in analysing mitochondria
 
 ## Prerequisites
 
-## Prerequisites
-
 - R (version 4.0 or higher)
 - Required R packages: `readr`, `readxl`, `dplyr`, `ggplot2`, `lmerTest`
 
@@ -55,9 +53,7 @@ The analysis utilises K-means clustering to group beta cells based on several pa
 
 The repository includes various plots to help visualise and interpret the data:
 - Bar Chart of Beta Cell Counts by Diabetes Status.
-- Violin Plots by Sex and Diabetes Status.
 - Proportional Stacked Bar Charts.
-- Residual Analysis by Cell Type.
 - Scatter Plots by BMI and Age.
 
 
