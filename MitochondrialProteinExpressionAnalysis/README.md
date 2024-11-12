@@ -5,12 +5,12 @@ This README provides an overview of the steps involved in analysing mitochondria
 ## Prerequisites
 
 - R (version 4.0 or higher)
-- Required R packages: `readr`, `readxl`, `dplyr`, `ggplot2`, `lmerTest`
+- Required R packages: `readr`, `readxl`, `dplyr`, `ggplot2`
 
 Install the necessary packages using the following commands:
 
 ```R
-install.packages(c("readr", "readxl", "dplyr", "ggplot2", "tidyr", "lmerTest"))
+install.packages(c("readr", "readxl", "dplyr", "ggplot2", "tidyr"))
 ``
 
 Load the libraries:
@@ -21,7 +21,6 @@ library(readxl)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
-library(lme4)
 ```
 
 ## Repository Contents
