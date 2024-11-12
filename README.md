@@ -21,7 +21,7 @@ This image analysis pipeline was developed as part of a study exploring islet co
    - The segmented cells are then quantified for various markers, including mitochondrial proteins and islet endocrine hormones, to assess islet composition and mitochondrial function.
 
 ### 5. **Data Analysis**
-   - The data obtained from the segmentation and quantification steps are analyseed statistically using RStudio or other statistical software.
+   - The data obtained from the segmentation and quantification steps are analyseed statistically using RStudio and SPSS.
 
 ## Key Findings
 - **Islet Composition**: Analysis revealed a higher α:β cell ratio in donors with T2D and a reduction in total β-cell count.
