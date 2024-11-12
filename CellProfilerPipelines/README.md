@@ -5,78 +5,66 @@ This repository provides pipelines for automated single-cell segmentation image 
 
 ## Pipelines Overview
 
-### 1. Islet Composite Analysis Pipeline
+# Islet Composition Staining Panel
 
-**Purpose:** Analyse islet composition by integrating multiple cellular markers to provide detailed insights into islet composition and cellular interactions.
+In the analysis of the **islet composition staining panel**, after nuclei segmentation in Stardist, islets are further divided into their respective channels: nuclei (DAPI), cell membrane (E-cadherin), glucagon (alpha cells), and insulin (beta cells) using an automated **ImageJ/FIJI macro**. The processing flow is as follows:
 
-**Modules Used:**
+1. **RescaleIntensity Module**: This module normalises the intensity of the E-cadherin segmentation marker to enhance contrast for accurate segmentation. 
+   - **Parameters**:
+     - **Scaling Method**: Linear scaling
+     - **Range**: 0 to 255 (standard intensity range for image processing)
+   
+2. **Smooth Module**: This module is used to remove any artefacts that might be introduced during the E-cadherin segmentation process.
+   - **Parameters**:
+     - **Smoothing Method**: Gaussian smoothing
+     - **Sigma**: 2 pixels for noise removal
 
-- **RescaleIntensity**
-  - **Purpose:** Normalise the intensity values of mitochondrial images to enhance contrast and improve measurement accuracy.
-  - **Parameters:**
-    - `Scaling Method`: Define the method for scaling intensity (e.g., linear, logarithmic).
-    - `Range`: Specify the target range for intensity values.
-    
-- **IdentifyPrimaryObjects**
-  - **Purpose:** Identifies individual cells based on the nuclear marker (e.g., DAPI).
-  - **Parameters:** 
-    - `Thresholding Method`: Select the appropriate thresholding method for nuclear identification.
-    - `Minimum/Maximum Size`: Define the expected size range of nuclei.
+3. **IdentifyPrimaryObjects Module**: Applied to recognise segmented nuclei from the Stardist output.
+   - **Parameters**:
+     - **Thresholding Method**: Otsu's thresholding
+     - **Minimum Size**: 10 pixels (to ensure nuclei are not fragmented)
+     - **Maximum Size**: 1500 pixels (to exclude large artefacts)
 
-- **IdentifySecondaryObjects**
-  - **Purpose:** Identifies cell membranes using the cell membrane marker (e.g., E-cadherin).
-  - **Parameters:** 
-    - `Thresholding Method`: Method for detecting cell membranes.
-    - `Morphological Operations`: Adjust for accurate membrane delineation.
+4. **IdentifySecondaryObjects Module**: This module is applied using the nuclei and cell membrane segmentation images to identify individual cells.
+   - **Parameters**:
+     - **Thresholding Method**: Otsu thresholding
+     - **Range for Cell Membrane Segmentation**: Three-class Otsu thresholding within the range of 0.02 - 0.4
+     - **Morphological Operations**: Apply dilation followed by erosion to delineate cell boundaries.
 
-- **MeasureObjectIntensity**
-  - **Purpose:** Measures the intensity of various markers within identified objects.
-  - **Parameters:** 
-    - `Intensity Measurements`: Specify which markers to measure (e.g., insulin and glucagon).
+5. **MeasureObjectIntensity Module**: This module is used to measure glucagon and insulin intensities within individual cells.
+   - **Parameters**:
+     - **Intensity Measurements**: Glucagon and insulin staining intensities within cells.
+   
+6. **MeasureObjectSizeShape Module**: Used to measure the size and shape of objects (cells) to provide additional data about cell morphology.
+   - **Parameters**:
+     - **Object Size Measurement**: Mean area of segmented objects (cells)
 
-- **RelateObjects**
-  - **Purpose:** Relates nuclei to their corresponding cell membranes to analyze cellular compositions.
-  - **Parameters:** 
-    - `Relational Criteria`: Define how to link nuclei with membranes.
+7. **ExportToSpreadsheet Module**: This module is used to export the analysis results to a .csv file for further downstream analysis.
+   - **Parameters**:
+     - **Output Directory**: `/path/to/output/folder`
 
-- **ExportToSpreadsheet**
-  - **Purpose:** Export analysis results to a spreadsheet for further analysis.
-  - **Parameters:** 
-    - `Output Directory`: Specify where to save the results.
+# Mitochondrial Staining Panel
 
-### 2. Mitochondrial Protein Expression Quantification Pipeline
+The mitochondrial staining panels have a slightly modified workflow due to the presence of only one segmentation marker. Here, the **cell membrane** (E-cadherin) marker images are used for segmentation, and the **IdentifyPrimaryObjects** module is applied directly to these images.
 
-**Purpose:** Quantify mitochondrial protein expression within cells using a specific marker for segmentation.
+1. **RescaleIntensity Module**: This module normalises the intensity values of mitochondrial images to enhance contrast and improve measurement accuracy for mitochondrial staining.
+   - **Parameters**:
+     - **Scaling Method**: Linear scaling
+     - **Range**: 0 to 255 (standard range)
+   
+2. **IdentifyPrimaryObjects Module**: Applied to identify individual cells using the cell membrane (E-cadherin) marker images.
+   - **Parameters**:
+     - **Thresholding Method**: Otsu's thresholding
+     - **Minimum Size**: 10 pixels
+     - **Maximum Size**: 1500 pixels
 
-**Modules Used:**
-
-- **RescaleIntensity**
-  - **Purpose:** Normalise the intensity values of mitochondrial images to enhance contrast and improve measurement accuracy.
-  - **Parameters:**
-    - `Scaling Method`: Define the scaling method for intensity values.
-    - `Range`: Specify the target range for normalized intensity.
-    
-- **ImageMath**
-  - **Purpose:** Perform mathematical operations to preprocess images for better protein quantification.
-  - **Parameters:**
-    - `Operation`: Choose the mathematical operation suitable for image preprocessing.
-    - `Value`: Define the value used in the operation.
-    
-- **IdentifyPrimaryObjects**
-  - **Purpose:** Identifies individual cells using the cell membrane marker (e.g., E-cadherin) for segmentation.
-  - **Parameters:** 
-    - `Thresholding Method`: Choose the method for detecting cell membranes.
-    - `Minimum/Maximum Size`: Define size parameters for cells.
-
-- **MeasureObjectIntensity**
-  - **Purpose:** Measures mitochondrial protein expression levels within identified cells.
-  - **Parameters:** 
-    - `Intensity Measurements`: Specify the mitochondrial marker to quantify (e.g., VDAC1 (Mitochondrial Mass), NDUFB8 (Complex I), and MTCO1 (Complex IV).
-
-- **ExportToSpreadsheet**
-  - **Purpose:** Export the quantified protein expression data to a spreadsheet.
-  - **Parameters:** 
-    - `Output Directory`: Specify where to save the results.
+3. **MeasureObjectIntensity Module**: This module quantifies mitochondrial protein expression within cells. The analysis includes measurements for **Complex I**, **Complex IV**, and **mitochondrial mass** (VDAC1).
+   - **Parameters**:
+     - **Intensity Measurements**: VDAC1 (mitochondrial mass), NDUFB8 (Complex I), and MTCO1 (Complex IV)
+   
+4. **ExportToSpreadsheet Module**: This module is used to export mitochondrial protein expression data to a .csv file.
+   - **Parameters**:
+     - **Output Directory**: `/path/to/output/folder`
 
 ## Installation
 
