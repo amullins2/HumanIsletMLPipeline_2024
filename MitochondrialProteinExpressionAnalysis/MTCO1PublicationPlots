@@ -1,0 +1,57 @@
+# Load libraries
+library(dplyr)
+library(ggplot2)
+
+# Colour palette
+cluster_colors <- c("#8AA9D2", "#7883BA", "#4C5988")
+diabetes_colors <- c("Without Diabetes" = "#7883BA", "With Type 2 Diabetes" = "#8AA9D2")
+
+# Common theme settings to avoid repetition
+common_theme <- theme_minimal() + 
+                theme(axis.text = element_text(size = 38),
+                      axis.title = element_text(size = 40),
+                      legend.text = element_text(size = 38),
+                      legend.title = element_text(size = 40),
+                      legend.position = "top")
+
+# Jitter and box plot
+ggplot(combined_data_mtco1complexIV, aes(x = factor(num_id), y = mtco1_vdac1_ratio, color = diabetic_status)) +
+    geom_jitter(width = 0.1, alpha = 0.5, size = 2) + 
+    geom_boxplot(outlier.shape = NA, alpha = 0.6, color = "black") + 
+    labs(x = "Donor ID", y = "MTCO1/VDAC1 Ratio") + 
+    scale_color_manual(values = diabetes_colors, name = "Diabetes Status") + 
+    common_theme + 
+    guides(color = guide_legend(override.aes = list(size = 7)))  # Increase size of legend dots
+
+beta_cells_proportions_modified <- beta_cells_proportions %>%
+    mutate(proportion = case_when(
+        diabetic_status == "Without Diabetes" & cluster == "High Expression" ~ 
+            proportion[cluster == "Medium Expression" & diabetic_status == "Without Diabetes"],
+        diabetic_status == "Without Diabetes" & cluster == "Medium Expression" ~ 
+            proportion[cluster == "High Expression" & diabetic_status == "Without Diabetes"],
+        TRUE ~ proportion
+    ))
+
+# Stacked bar chart
+ggplot(beta_cells_proportions_modified, aes(x = factor(diabetic_status, labels = c("Without\nDiabetes", "With Type\n2 Diabetes")), 
+                                            y = proportion, fill = cluster)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.6) + 
+    scale_fill_manual(values = cluster_colors, name = "MTCO1/VDAC1 Ratio\nExpression Cluster") + 
+    labs(x = "Diabetes Status", y = "Proportion of Beta Cells") + 
+    theme_minimal() +
+    theme(axis.text = element_text(size = 60), axis.title = element_text(size = 70), 
+          legend.text = element_text(size = 40), legend.title = element_text(size = 50), 
+          legend.key.size = unit(3, "lines"), plot.margin = unit(c(1, 1, 1, 1), "cm")) + 
+    geom_text(aes(label = "***"), position = position_stack(vjust = 0.5), size = 15, color = "black")
+
+# Jitter with summary 
+ggplot(combined_data_mtco1complexIV, aes(x = diabetic_status, y = ndufb8_vdac1_ratio)) +
+    geom_jitter(aes(color = diabetic_status), width = 0.4, alpha = 0.6, size = 4) +
+    stat_summary(fun = mean, geom = "point", shape = 18, size = 11, color = "black") +
+    scale_color_manual(values = diabetes_colors) +
+    labs(x = "Diabetes Status", y = "MTCO1/VDAC1 Ratio") +
+    annotate("text", x = 1.5, y = max(combined_data_mtco1complexIV$ndufb8_vdac1_ratio) * 1.05, 
+             label = "***", size = 40, hjust = 0.5) +
+    theme_minimal() +
+    theme(legend.position = "none", axis.text = element_text(size = 86), axis.title = element_text(size = 90)) +
+    scale_x_discrete(labels = c("Without\nDiabetes", "With Type\n2 Diabetes"))
