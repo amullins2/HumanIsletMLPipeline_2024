@@ -24,8 +24,8 @@ This image analysis pipeline was developed as part of a study exploring islet co
    - The data obtained from the segmentation and quantification steps are analyseed statistically using RStudio and SPSS.
 
 ## Key Findings
-- **Islet Composition**: Analysis revealed a higher α:β cell ratio in donors with T2D and a reduction in total β-cell count.
-- **Mitochondrial Function**: T2D β-cells exhibited altered oxidative phosphorylation (OXPHOS) signatures, including single-cell resolution changes in Complex I and IV expression ratios.
+- **Islet Composition**: Analysis revealed a higher alpha: beta cell ratio in donors with T2D and a reduction in total beta-cell count.
+- **Mitochondrial Function**: T2D beta-cells exhibited altered oxidative phosphorylation (OXPHOS) signatures, including single-cell resolution changes in Complex I and IV expression ratios.
 
 ## Software and Tools Used
 - **Microscope**: Zeiss LSM800 AiryScan.
