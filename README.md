@@ -1,4 +1,4 @@
-# IsletAIlytics - Single-Cell Segmentation Image Analysis Pipeline for Islet Composition and Mitochondrial Protein Expression
+# IsletAnalytics - Single-Cell Segmentation Image Analysis Pipeline for Islet Composition and Mitochondrial Protein Expression
 
 ## Overview
 This image analysis pipeline was developed as part of a study exploring islet composition and mitochondrial function in human pancreatic tissues, specifically comparing older donors (aged > 62 years) with and without Type 2 Diabetes (T2D). The pipeline uses a semi-automated approach to segment and analyse immunofluorescent-stained human pancreatic islets at the single-cell level.
